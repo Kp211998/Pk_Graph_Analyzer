@@ -1,5 +1,0 @@
-streamlit~=1.31.1
-uuid~=1.30
-graphviz~=0.20.1
-networkx~=3.2.1
-matplotlib~=3.8.3
