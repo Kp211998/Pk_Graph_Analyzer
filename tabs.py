@@ -55,10 +55,10 @@ def create_node():
         st.toast('Node Details Saved Successfully', icon='😍')
         modal.open()
 
-    # if modal.is_open():
-    #     with modal.container():
-    #         st.text('Thank you for your vote to BJP')
-    #         st.image('nm.jpeg', caption='', width=350)
+     if modal.is_open():
+         with modal.container():
+             st.text('Thank you for your vote to BJP')
+             st.image('nm.jpeg', caption='', width=350)
 
 
 def save_node(name, age, type_of_node):
