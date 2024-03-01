@@ -46,7 +46,7 @@ smmap==5.0.1
 streamlit==1.31.1
 streamlit-agraph==0.0.45
 streamlit-modal==0.1.2
-streamlit_option_menu==0.3.12
+streamlit-option-menu==0.3.12
 tenacity==8.2.3
 toml==0.10.2
 toolz==0.12.1
