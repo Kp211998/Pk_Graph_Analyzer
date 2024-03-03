@@ -18,9 +18,9 @@ def count_nodes(graph: nx.Graph):
 def check_path(graph: nx.Graph, ):
     node1_col, node2_col = st.columns(2)
     with node1_col:
-        node1_select = st.selectbox("Select first node", options=g.nodes, key="node1_select")
+        node1_select = st.selectbox("Select first node", options=graph.nodes, key="node1_select")
     with node2_col:
-        node2_select = st.selectbox("Select second node", options=g.nodes, key="node2_select")
+        node2_select = st.selectbox("Select second node", options=graph.nodes, key="node2_select")
 
     if node1_select and node2_select and nx.has_path(graph, node1_select, node2_select):
         st.success(f"There is a path between node {node1_select} and node {node2_select}.")
@@ -46,7 +46,7 @@ def is_directed(graph: nx.Graph):
 
 # Function to display information about a specific node in a graph
 def specific_node(graph: nx.Graph):
-    node_select = st.selectbox("Select node", options=g.nodes, key="node_select")
+    node_select = st.selectbox("Select node", options=graph.nodes, key="node_select")
     node = graph.nodes[node_select]
     st.info(node)
 
@@ -179,40 +179,32 @@ def show_graph_without_weights(nodes, edges):
         graph.edge(source, target, label)
     st.graphviz_chart(graph)
 
+def minimum_spanning_tree(graph: nx.Graph):
+    G = nx.Graph()
+    edge_list=st.session_state["edge_list"]
+    for edge in edge_list:
+        G.add_edge(edge["source"], edge["target"], weight=edge["dist"])
+    minimum_spanning_tree_graph=nx.minimum_spanning_tree(G)
+
+    graphviz_graph = graphviz.Digraph()
+    for node in minimum_spanning_tree_graph.nodes:
+        graphviz_graph.node(str(node))
+
+    for edge in minimum_spanning_tree_graph.edges:
+        graphviz_graph.edge(str(edge[0]), str(edge[1]))
+    st.graphviz_chart(graphviz_graph)
+
 def spanning_tree(graph: nx.Graph):
     root_node = st.selectbox(
         "Select the start node of the shortest paths",
         options=graph.nodes
     )
-    # Initialize a visited set to keep track of visited nodes
-    visited = set()
 
-    # Initialize a dictionary to store the parent of each node in the spanning tree
-    parent = {}
-
-    # Initialize a list to store the edges of the spanning tree
-    spanning_edges = []
-
-    # Define a DFS function to traverse the graph and construct the spanning tree
-    def dfs(node, parent_node=None):
-        visited.add(node)
-        parent[node] = parent_node
-
-        # Traverse all neighboring nodes
-        for neighbor in graph.neighbors(node):
-            # Check if the neighbor has been visited
-            if neighbor not in visited:
-                # Add the edge to the spanning tree
-                spanning_edges.append((node, neighbor))
-
-                # Recursively call DFS on the neighbor
-                dfs(neighbor, node)
-
-    # Call DFS starting from the root node
-    dfs(root_node)
-
-    # Create a new graph for the spanning tree
-    spanning_tree_graph = nx.Graph(spanning_edges)
+    G = nx.Graph()
+    edge_list=st.session_state["edge_list"]
+    for edge in edge_list:
+        G.add_edge(edge["source"], edge["target"], weight=edge["dist"])
+    spanning_tree_graph=nx.dfs_tree(G, source=root_node)
 
     graphviz_graph = graphviz.Digraph()
     for node in spanning_tree_graph.nodes:

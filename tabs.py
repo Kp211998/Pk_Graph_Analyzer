@@ -7,7 +7,8 @@ from streamlit_agraph import agraph, Node, Edge, Config  # Importing agraph for 
 import networkx as nx  # Importing NetworkX for graph analysis
 from graph_functions import (output_nodes_and_edges, count_nodes, is_empty, find_density, is_directed, check_path,
                              specific_node, specific_edge, shortest_path,
-                             show_shortest_paths, spanning_tree)  # Importing custom graph functions
+                             show_shortest_paths, spanning_tree, minimum_spanning_tree)  # Importing custom graph functions
+import time
 
 # Function to upload graph from JSON
 def upload_graph():
@@ -115,7 +116,8 @@ def delete_node():
         st.session_state["deleted_node"] = node_to_delete  # Store the deleted node name
 
         st.success(f"Node '{node_to_delete}' has been deleted.")
-
+        time.sleep(1)
+        st.experimental_rerun()
 # Function to create a relation
 def create_relation():
     node1_col, relation_col, node2_col = st.columns(3)
@@ -237,6 +239,8 @@ def delete_edge():
         st.session_state["edge_list"] = edge_list
 
         st.success(f"Edge '{edge_to_delete}' has been deleted.")
+        time.sleep(1)
+        st.experimental_rerun()
 
 # Function to display stored graph details
 def store_graph():
@@ -330,7 +334,7 @@ def analyze_graph():
                                    options=["Output nodes and edges", 'Count nodes', "Show specific node",
                                             "Show specific edge", "Check Path", "Check if Graph is Empty",
                                             "Density of Graph", "Is Graph Directed", "Find shortest Path",
-                                            "Show shortest Path(Soln of Prof.Luder)","Spanning Tree"])
+                                            "Show shortest Path(Soln of Prof.Luder)","Spanning Tree", "Minimum Spanning Tree"])
 
     if select_function == "Output nodes and edges":
         output_nodes_and_edges(graph=g)
@@ -354,6 +358,8 @@ def analyze_graph():
         show_shortest_paths(g)
     elif select_function == "Spanning Tree":
         spanning_tree(g)
+    elif select_function == "Minimum Spanning Tree":
+        minimum_spanning_tree(g)
 
 # Function to export graph to JSON
 def export_graph():
