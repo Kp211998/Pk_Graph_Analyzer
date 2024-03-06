@@ -253,32 +253,35 @@ def store_graph():
 
 # Function to visualize graph using Graphviz and Agraph
 def visualize_graph():
-    update_graph_dict()
-
     def set_color(node_type):
         color = 'grey'
-        if node_type == 'Person':
-            color = 'green'
-        elif node_type == 'Node':
+        if node_type == 'product':
             color = 'red'
-        elif node_type == 'Resource':
+        elif node_type == 'process':
+            color = 'green'
+        elif node_type == 'connector':
             color = 'blue'
         return color
 
     with st.expander("Show Graph", expanded=False):
         graph = graphviz.Digraph()
-        graph_dict = st.session_state["graph_dict"]
+        graph_dict = {
+            "nodes": st.session_state["node_list"],
+            "edges": st.session_state["edge_list"],
+        }
         node_list = graph_dict["nodes"]
         edge_list = graph_dict["edges"]
 
         for node in node_list:
-            node_name = node["name"]
-            graph.node(node_name, color=set_color(node["type"]))
+            node_id = node["id"]
+            node_label = node["data"]["label"] if "data" in node and "label" in node["data"] else ""
+            node_type = node["type"]
+            graph.node(node_id, label=node_label, color=set_color(node_type))
 
         for edge in edge_list:
             source = edge["source"]
             target = edge["target"]
-            label = edge["type"]
+            label = edge["label"]
             graph.edge(source, target, label)
 
         st.graphviz_chart(graph)
@@ -287,14 +290,23 @@ def visualize_graph():
         nodes = []
         edges = []
 
+        graph_dict = {
+            "nodes": st.session_state["node_list"],
+            "edges": st.session_state["edge_list"],
+        }
         node_list = graph_dict["nodes"]
         edge_list = graph_dict["edges"]
 
         for node in node_list:
-            nodes.append(Node(id=node['name'], label=node["name"]))
+            node_id = node["id"]
+            node_label = node["data"]["label"] if "data" in node and "label" in node["data"] else ""
+            nodes.append(Node(id=node_id, label=node_label))
 
         for edge in edge_list:
-            edges.append(Edge(source=edge['source'], target=edge['target'], label=edge["type"]))
+            source = edge["source"]
+            target = edge["target"]
+            label = edge["label"]
+            edges.append(Edge(source=source, target=target, label=label))
 
         config = Config(width=500,
                         height=500,
